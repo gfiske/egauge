@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ###############################################################################
-# egauge_to_google.py 2009-8-17
+# egauge_to_google.py 2015-11-05
 #
 # Project:  egauge
 # Purpose:  The purpose of this script is to collect egauge data from device and
