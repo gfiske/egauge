@@ -29,7 +29,7 @@ db_user = db_user.decode('base64','strict')
 db_passwd = db_passwd.decode('base64','strict')
 email = g_user.decode('base64','strict')
 password = g_passwd.decode('base64','strict')[0:15]
-spreadsheet_name = 'egauge16231'
+spreadsheet_name = 'home_egauge16231'
 ###############################################################
 
 # Enter eGauge name
@@ -52,11 +52,12 @@ def pullFromDevice():
         title = meter.attrib['title']
         if title == "Grid":
             grid = meter.findtext("power")
-            #print "Grid usage is: " + power
         if title == "Solar":
             solar = meter.findtext("power")
-            #print "Solar usage is: " + power
-    return timestamp,grid,solar
+        if title == "HVAC":
+            hvac = meter.findtext("power")
+            hvac = str(float(hvac)* -1)
+    return timestamp,grid,solar,hvac
 
 data = pullFromDevice()
 
@@ -68,19 +69,21 @@ cur_time = (
     )
 cur_grid = data[1]
 cur_solar = data[2]
+cur_hvac = data[3]
 
 #print cur_time
 #print cur_grid
 #print cur_solar
+#print cur_hvac
 
 try:
     #enter the data into the google spreadsheet
-    rowToAdd = (cur_time,cur_grid,cur_solar)
+    rowToAdd = (cur_time,cur_grid,cur_solar,cur_hvac)
     json_key = json.load(open('/home/pi/pi_energy/raspPi-e0a08639ebab.json'))
     scope = ['https://spreadsheets.google.com/feeds']
     credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
     g = gspread.authorize(credentials)
-    worksheet = g.open('egauge16231').get_worksheet(0)
+    worksheet = g.open('home_egauge16231').get_worksheet(0)
     worksheet.append_row(rowToAdd)
     print "...row add success"
 except:

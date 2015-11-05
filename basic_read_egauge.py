@@ -28,8 +28,12 @@ for meter in tree.findall( 'meter' ):
         power = meter.findtext("power")
         print "Grid usage is: " + power
     if title == "Solar":
-        power = meter.findtext("power")
-        print "Solar usage is: " + power
+        solar = meter.findtext("power")
+        print "Solar production is: " + solar
+    if title == "HVAC":
+        hvac = meter.findtext("power")
+        hvac = str(float(hvac)* -1)
+        print "HVAC usage is: " + hvac
 
 # Examine all the children of the tree
 ##for child in tree:
