@@ -14,26 +14,48 @@ url = "http://" + eGauge + ".egaug.es/cgi-bin/egauge?noteam"
 # Parse the results
 tree = ET.parse(urllib.urlopen(url)).getroot()
 timestamp  = tree.findtext("timestamp")
+print
 print "Current timestamp is: " + (
     datetime.datetime.fromtimestamp(
         int(timestamp)
     ).strftime('%Y-%m-%d %H:%M:%S')
 )
-
+print
+print "Current stats..."
 # Get meter level results
 for meter in tree.findall( 'meter' ):
     #print meter
     title = meter.attrib['title']
     if title == "Grid":
         power = meter.findtext("power")
-        print "Grid usage is: " + power
+        print "Grid usage: " + power + " watts"
     if title == "Solar":
         solar = meter.findtext("power")
-        print "Solar production is: " + solar
+    if title == "Solar2":
+        solar2 = meter.findtext("power")
+        print "Solar production: " + str((float(solar)+float(solar2))) + " watts"
     if title == "HVAC":
         hvac = meter.findtext("power")
         hvac = str(float(hvac)* -1)
-        print "HVAC usage is: " + hvac
+        print "HVAC usage: " + hvac + " watts"
+print
+print "Cumulative stats..."
+for meter in tree.findall( 'meter' ):
+    #print meter
+    title = meter.attrib['title']
+    if title == "Grid":
+        power = meter.findtext("energy")
+        print "Grid has used: " + power + " kwh"
+    if title == "Solar":
+        solar = meter.findtext("energy")
+    if title == "Solar2":
+        solar2 = meter.findtext("energy")
+        print "Solar has produced: " + str((float(solar)+float(solar2))) + " kwh"
+    if title == "HVAC":
+        hvac = meter.findtext("energy")
+        hvac = str(float(hvac)* -1)
+        print "HVAC has used: " + hvac + " kwh"
+
 
 # Examine all the children of the tree
 ##for child in tree:
